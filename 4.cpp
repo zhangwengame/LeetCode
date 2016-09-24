@@ -1,11 +1,50 @@
+//log(min(m,n))
+class Solution {
+public:
+double findMedianSortedArrays(vector<int>& A, vector<int>& B) {
+	if (A.size()>B.size())
+	    return findMedianSortedArrays(B,A);
+	if (A.size()==0) 
+	    return B.size()%2==1?B[B.size()/2]:(B[B.size()/2]+B[B.size()/2-1])*0.5;
+    int l=0; 
+    int r=A.size();
+    int n=A.size();
+    int m=B.size();
+    int odd=(m+n)%2==1?1:0;
+    while (l<=r) {
+        int i=(l+r)>>1;
+        int j=((m+n+1)>>1)-i;
+        if (i<n && j>0 && A[i]< B[j-1])
+            l=i+1;
+        else if (j<m && i>0 && B[j]<A[i-1])
+            r=i-1;
+        else {
+            int max_of_left;
+            if (i==0)
+                max_of_left=B[j-1];
+            else if (j==0)
+                max_of_left=A[i-1];
+            else 
+                max_of_left=max(A[i-1],B[j-1]);
+            
+            if (odd)
+                return max_of_left;
+            int min_of_right;
+            if (i==n)
+                min_of_right=B[j];
+            else if (j==m)
+                min_of_right=A[i];
+            else
+                min_of_right=min(A[i],B[j]);
+            return (min_of_right+max_of_left)*0.5;
+        }
+    }
+    return -1;
+}
 
-#include<cstdlib>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <stack>
-#include <algorithm>
-using namespace std;
+
+};
+//log(m+n)
 class Solution {
 public:
 double findMedianSortedArrays(vector<int>& A, vector<int>& B) {
@@ -25,23 +64,11 @@ private:
 		//divide k into two parts
 		int ia = min(k / 2, m), ib = k - ia;
 		if (A[sa+ia - 1] < B[sb+ib - 1])
-			return find_kth(A,sa + ia, m - ia, B,sb, n, k - ia);
+			return find_kth(A,sa + ia, m - ia, B,sb, n-(n-ib), k - ia);
 		else if (A[sa+ia - 1] > B[sb+ib - 1])
-			return find_kth(A, sa, m, B ,sb+ ib, n - ib, k - ib);
+			return find_kth(A, sa, m-(m-ia), B ,sb+ ib, n - ib, k - ib);
 		else
 			return A[sa+ia - 1];
 	}
 };
-int main(){
-
-	Solution *s=new Solution();
-	int l1[]={1,3,5};
-	int l2[]={2,4,6,8};
-	vector<int> v1(l1,l1+3);
-	vector<int> v2(l2,l2+4);
-	double ret=s->findMedianSortedArrays(v1,v2);
-	printf("%lf\n",ret);
-
-}
-
 
