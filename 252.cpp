@@ -7,21 +7,19 @@
  *     Interval(int s, int e) : start(s), end(e) {}
  * };
  */
-struct IntervalCmp{
-    bool operator () (const Interval& a, const Interval& b) const {
-        return a.end<b.end;
+
+struct cmp{
+    bool operator() (const Interval& a,const Interval& b){
+        return a.start<b.start;
     }
 };
 class Solution {
 public:
-    bool canAttendMeetings(vector<Interval>& intervals) {
-        int lastEnd=numeric_limits<int>::min();
-        sort(intervals.begin(),intervals.end(),IntervalCmp());
-        for (int i=0;i<intervals.size();i++) {
-            if (intervals[i].start<lastEnd)
+    bool canAttendMeetings(vector<Interval>& ins) {
+        sort(ins.begin(),ins.end(),cmp());
+        for (int i=1;i<ins.size();i++)
+            if (ins[i].start<ins[i-1].end)
                 return false;
-            lastEnd=intervals[i].end;
-        }
         return true;
     }
 };
